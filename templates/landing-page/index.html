@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Visita - PAMEC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .section {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #003366;
+            border-bottom: 2px solid #B8D4F0;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #003366;
+        }
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="time"],
+        .form-group input[type="date"],
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .checkbox-group {
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+        .checkbox-group input[type="checkbox"],
+        .checkbox-group input[type="radio"] {
+            margin-right: 8px;
+        }
+        #signatureCanvas {
+            border: 1px solid #ccc;
+            background-color: white;
+            width: 100%;
+            height: 100px;
+            cursor: crosshair;
+            margin-bottom: 10px;
+        }
+        .button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #002244;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PAMEC</h1>
+        <p>Distribuidor Autorizado</p>
+    </div>
+
+    <h1 style="text-align: center; color: #003366;">Reporte de Visita/SupervisiÃ³n</h1>
+
+    <!-- Datos Generales -->
+    <div class="section">
+        <h2>Datos Generales</h2>
+        <div class="form-group">
+            <label>Fecha de visita:</label>
+            <input type="date" id="fecha">
+        </div>
+    </div>
+
+    <!-- InformaciÃ³n del Punto de Venta -->
+    <div class="section">
+        <h2>InformaciÃ³n del Punto de Venta</h2>
+        <div class="form-group">
+            <label>Cadena:</label>
+            <select id="cadena">
+                <option value="">Seleccionar...</option>
+                <option value="Coppel">Coppel</option>
+                <option value="Elektra">Elektra</option>
+                <option value="Chedraui">Chedraui</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Sucursal:</label>
+            <select id="sucursal">
+                <option value="">Seleccionar...</option>
+                <option value="218">218</option>
+                <option value="23">23</option>
+                <option value="99">99</option>
+                <option value="105">105</option>
+                <option value="363">363</option>
+                <option value="385">385</option>
+                <option value="716">716</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>DirecciÃ³n:</label>
+            <input type="text" id="direccion" placeholder="Ingresar direcciÃ³n">
+        </div>
+        <div class="form-group">
+            <label>Hora de llegada:</label>
+            <input type="time" id="hora_llegada">
+        </div>
+        <div class="form-group">
+            <label>Hora de salida:</label>
+            <input type="time" id="hora_salida">
+        </div>
+    </div>
+
+    <!-- Checklist de SupervisiÃ³n -->
+    <div class="section">
+        <h2>Checklist de SupervisiÃ³n</h2>
+        <div class="form-group">
+            <label>Inventario:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="equipos_disponibles">
+                <label for="equipos_disponibles">Equipos disponibles (modelos/cantidades):</label>
+                <input type="text" id="detalle_equipos" placeholder="Ej: 10 iPhone 13, 5 Samsung Galaxy S22">
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="accesorios">
+                <label for="accesorios">Accesorios:</label>
+                <input type="text" id="detalle_accesorios" placeholder="Ej: 20 cargadores, 15 fundas">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Estado del punto de venta:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="limpieza_check">
+                <label>Limpieza y orden:</label>
+                <input type="radio" id="limpieza_si" name="limpieza" value="si">
+                <label for="limpieza_si">SÃ­</label>
+                <input type="radio" id="limpieza_no" name="limpieza" value="no">
+                <label for="limpieza_no">No</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="material_pop_check">
+                <label>Material POP visible:</label>
+                <input type="radio" id="pop_si" name="pop" value="si">
+                <label for="pop_si">SÃ­</label>
+                <input type="radio" id="pop_no" name="pop" value="no">
+                <label for="pop_no">No</label>
+            </div>
+            <div class="form-group">
+                <label>AtenciÃ³n al cliente:</label>
+                <textarea id="atencion_cliente" placeholder="Ej: Tiempo de espera, amabilidad, etc."></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Incidencias:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="falta_stock_check">
+                <label>Falta de stock:</label>
+                <input type="radio" id="stock_si" name="stock" value="si">
+                <label for="stock_si">SÃ­</label>
+                <input type="radio" id="stock_no" name="stock" value="no">
+                <label for="stock_no">No</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="equipos_danados_check">
+                <label>Equipos daÃ±ados:</label>
+                <input type="radio" id="danados_si" name="danados" value="si">
+                <label for="danados_si">SÃ­</label>
+                <input type="radio" id="danados_no" name="danados" value="no">
+                <label for="danados_no">No</label>
+            </div>
+            <div class="form-group">
+                <label>Requerimientos adicionales:</label>
+                <textarea id="requerimientos" placeholder="Describir requerimientos"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="section">
+        <h2>Observaciones</h2>
+        <textarea id="observaciones" placeholder="Ej: Falta reposiciÃ³n de modelo X, capacitar al equipo en promociÃ³n Y, etc."></textarea>
+    </div>
+
+    <!-- Firmas -->
+    <div class="section">
+        <h2>Firmas</h2>
+        <div class="form-group">
+            <label>Firma del Supervisor (Luis Cruz):</label>
+            <canvas id="signatureCanvas"></canvas>
+            <button class="button" id="clearSignature">Borrar Firma</button>
+        </div>
+        <div class="form-group">
+            <label>Firma de Gerencia:</label>
+            <canvas id="signatureCanvasGerencia"></canvas>
+            <button class="button" id="clearSignatureGerencia">Borrar Firma</button>
+        </div>
+        <div class="form-group">
+            <label>Fecha de validaciÃ³n:</label>
+            <input type="date" id="fecha_validacion">
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="section">
+        <h2>Acciones</h2>
+        <button class="button" id="saveData">Guardar Reporte</button>
+        <button class="button" id="loadData">Cargar Ãltimo Reporte</button>
+        <button class="button" id="exportData">Exportar a Texto</button>
+        <button class="button" id="exportImage">Exportar Firmas como Imagen</button>
+    </div>
+
+    <div class="footer">
+        <p>Pamec - Distribuidor Autorizado | Zona Oaxaca</p>
+    </div>
+
+    <script>
+        // --- Funcionalidad para firmas ---
+        const canvasSupervisor = document.getElementById('signatureCanvas');
+        const ctxSupervisor = canvasSupervisor.getContext('2d');
+        const canvasGerencia = document.getElementById('signatureCanvasGerencia');
+        const ctxGerencia = canvasGerencia.getContext('2d');
+        let isDrawingSupervisor = false;
+        let isDrawingGerencia = false;
+
+        // ConfiguraciÃ³n inicial de los canvas
+        ctxSupervisor.fillStyle = 'white';
+        ctxSupervisor.fillRect(0, 0, canvasSupervisor.width, canvasSupervisor.height);
+        ctxGerencia.fillStyle = 'white';
+        ctxGerencia.fillRect(0, 0, canvasGerencia.width, canvasGerencia.height);
+
+        // Eventos para firma del supervisor
+        canvasSupervisor.addEventListener('mousedown', () => isDrawingSupervisor = true);
+        canvasSupervisor.addEventListener('mousemove', drawSupervisor);
+        canvasSupervisor.addEventListener('mouseup', () => isDrawingSupervisor = false);
+        canvasSupervisor.addEventListener('mouseout', () => isDrawingSupervisor = false);
+
+        // Eventos para firma de gerencia
+        canvasGerencia.addEventListener('mousedown', () => isDrawingGerencia = true);
+        canvasGerencia.addEventListener('mousemove', drawGerencia);
+        canvasGerencia.addEventListener('mouseup', () => isDrawingGerencia = false);
+        canvasGerencia.addEventListener('mouseout', () => isDrawingGerencia = false);
+
+        // Dibujar firma del supervisor
+        function drawSupervisor(e) {
+            if (!isDrawingSupervisor) return;
+            ctxSupervisor.strokeStyle = '#000';
+            ctxSupervisor.lineWidth = 2;
+            ctxSupervisor.lineJoin = 'round';
+            ctxSupervisor.lineCap = 'round';
+            ctxSupervisor.lineTo(e.clientX - canvasSupervisor.getBoundingClientRect().left, e.clientY - canvasSupervisor.getBoundingClientRect().top);
+            ctxSupervisor.stroke();
+            ctxSupervisor.beginPath();
+            ctxSupervisor.moveTo(e.clientX - canvasSupervisor.getBoundingClientRect().left, e.clientY - canvasSupervisor.getBoundingClientRect().top);
+        }
+
+        // Dibujar firma de gerencia
+        function drawGerencia(e) {
+            if (!isDrawingGerencia) return;
+            ctxGerencia.strokeStyle = '#000';
+            ctxGerencia.lineWidth = 2;
+            ctxGerencia.lineJoin = 'round';
+            ctxGerencia.lineCap = 'round';
+            ctxGerencia.lineTo(e.clientX - canvasGerencia.getBoundingClientRect().left, e.clientY - canvasGerencia.getBoundingClientRect().top);
+            ctxGerencia.stroke();
+            ctxGerencia.beginPath();
+            ctxGerencia.moveTo(e.clientX - canvasGerencia.getBoundingClientRect().left, e.clientY - canvasGerencia.getBoundingClientRect().top);
+        }
+
+        // Borrar firmas
+        document.getElementById('clearSignature').addEventListener('click', () => {
+            ctxSupervisor.fillStyle = 'white';
+            ctxSupervisor.fillRect(0, 0, canvasSupervisor.width, canvasSupervisor.height);
+        });
+
+        document.getElementById('clearSignatureGerencia').addEventListener('click', () => {
+            ctxGerencia.fillStyle = 'white';
+            ctxGerencia.fillRect(0, 0, canvasGerencia.width, canvasGerencia.height);
+        });
+
+        // --- Funcionalidad para guardar y cargar datos ---
+        document.getElementById('saveData').addEventListener('click', () => {
+            const data = {
+                fecha: document.getElementById('fecha').value,
+                cadena: document.getElementById('cadena').value,
+                sucursal: document.getElementById('sucursal').value,
+                direccion: document.getElementById('direccion').value,
+                hora_llegada: document.getElementById('hora_llegada').value,
+                hora_salida: document.getElementById('hora_salida').value,
+                equipos_disponibles: document.getElementById('equipos_disponibles').checked,
+                detalle_equipos: document.getElementById('detalle_equipos').value,
+                accesorios: document.getElementById('accesorios').checked,
+                detalle_accesorios: document.getElementById('detalle_accesorios').value,
+                limpieza: document.querySelector('input[name="limpieza"]:checked')?.value,
+                material_pop: document.querySelector('input[name="pop"]:checked')?.value,
+                atencion_cliente: document.getElementById('atencion_cliente').value,
+                falta_stock: document.querySelector('input[name="stock"]:checked')?.value,
+                equipos_danados: document.querySelector('input[name="danados"]:checked')?.value,
+                requerimientos: document.getElementById('requerimientos').value,
+                observaciones: document.getElementById('observaciones').value,
+                fecha_validacion: document.getElementById('fecha_validacion').value,
+                firmaSupervisor: canvasSupervisor.toDataURL('image/png'),
+                firmaGerencia: canvasGerencia.toDataURL('image/png')
+            };
+
+            localStorage.setItem('reportePamec', JSON.stringify(data));
+            alert('Reporte guardado correctamente.');
+        });
+
+        // Cargar datos guardados
+        document.getElementById('loadData').addEventListener('click', () => {
+            const savedData = localStorage.getItem('reportePamec');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('fecha').value = data.fecha;
+                document.getElementById('cadena').value = data.cadena;
+                document.getElementById('sucursal').value = data.sucursal;
+                document.getElementById('direccion').value = data.direccion;
+                document.getElementById('hora_llegada').value = data.hora_llegada;
+                document.getElementById('hora_salida').value = data.hora_salida;
+                document.getElementById('equipos_disponibles').checked = data.equipos_disponibles;
+                document.getElementById('detalle_equipos').value = data.detalle_equipos;
+                document.getElementById('accesorios').checked = data.accesorios;
+                document.getElementById('detalle_accesorios').value = data.detalle_accesorios;
+                if (data.limpieza) document.querySelector(`input[name="limpieza"][value="${data.limpieza}"]`).checked = true;
+                if (data.material_pop) document.querySelector(`input[name="pop"][value="${data.material_pop}"]`).checked = true;
+                document.getElementById('atencion_cliente').value = data.atencion_cliente;
+                if (data.falta_stock) document.querySelector(`input[name="stock"][value="${data.falta_stock}"]`).checked = true;
+                if (data.equipos_danados) document.querySelector(`input[name="danados"][value="${data.equipos_danados}"]`).checked = true;
+                document.getElementById('requerimientos').value = data.requerimientos;
+                document.getElementById('observaciones').value = data.observaciones;
+                document.getElementById('fecha_validacion').value = data.fecha_validacion;
+
+                // Cargar firmas
+                const imgSupervisor = new Image();
+                imgSupervisor.onload = () => ctxSupervisor.drawImage(imgSupervisor, 0, 0);
+                imgSupervisor.src = data.firmaSupervisor;
+
+                const imgGerencia = new Image();
+                imgGerencia.onload = () => ctxGerencia.drawImage(imgGerencia, 0, 0);
+                imgGerencia.src = data.firmaGerencia;
+
+                alert('Reporte cargado correctamente.');
+            } else {
+                alert('No hay datos guardados.');
+            }
+        });
+
+        // Exportar datos a texto
+        document.getElementById('exportData').addEventListener('click', () => {
+            const savedData = localStorage.getItem('reportePamec');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'reporte_pamec.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('No hay datos para exportar.');
+            }
+        });
+
+        // Exportar firmas como imagen
+        document.getElementById('exportImage').addEventListener('click', () => {
+            const savedData = localStorage.getItem('reportePamec');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const linkSupervisor = document.createElement('a');
+                linkSupervisor.download = 'firma_supervisor.png';
+                linkSupervisor.href = data.firmaSupervisor;
+                linkSupervisor.click();
+
+                const linkGerencia = document.createElement('a');
+                linkGerencia.download = 'firma_gerencia.png';
+                linkGerencia.href = data.firmaGerencia;
+                linkGerencia.click();
+            } else {
+                alert('No hay firmas guardadas.');
+            }
+        });
+    </script>
+</body>
+</html>
