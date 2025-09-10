@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Foto con Geolocalización</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            display: inline-block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin: 15px 0;
+        }
+
+        #preview {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            background-color: #fefefe;
+        }
+
+        #preview img {
+            max-width: 100%;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .coordinates {
+            display: flex;
+            gap: 10px;
+        }
+
+        .coordinates input {
+            flex: 1;
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-camera-retro btn-icon"></i>Generador de Foto con Geolocalización</h1>
+
+        <!-- Sección: Logo -->
+        <div class="form-group">
+            <label for="logo"><i class="fas fa-image btn-icon"></i>Subir Logo:</label>
+            <input type="file" id="logo" accept="image/*">
+        </div>
+
+        <!-- Sección: Estilo de Plantilla -->
+        <div class="form-group">
+            <label for="template"><i class="fas fa-paint-brush btn-icon"></i>Seleccionar Estilo de Plantilla:</label>
+            <select id="template">
+                <option value="default">Predeterminado</option>
+                <option value="modern">Moderno</option>
+                <option value="classic">Clásico</option>
+                <option value="minimalist">Minimalista</option>
+            </select>
+        </div>
+
+        <!-- Sección: Ubicación -->
+        <div class="form-group">
+            <div class="section-title"><i class="fas fa-map-marker-alt btn-icon"></i>Ubicación</div>
+            <div id="map"></div>
+            <button id="getLocation"><i class="fas fa-location-arrow btn-icon"></i>Obtener Mi Ubicación</button>
+            <div class="coordinates">
+                <input type="text" id="latitude" placeholder="Latitud" readonly>
+                <input type="text" id="longitude" placeholder="Longitud" readonly>
+            </div>
+        </div>
+
+        <!-- Sección: Hora -->
+        <div class="form-group">
+            <label for="time"><i class="fas fa-clock btn-icon"></i>Hora (Timestamp):</label>
+            <input type="datetime-local" id="time">
+        </div>
+
+        <!-- Sección: Tomar Foto -->
+        <div class="form-group">
+            <button id="takePhoto"><i class="fas fa-camera btn-icon"></i>Tomar Foto con Geolocalización</button>
+        </div>
+
+        <!-- Vista Previa -->
+        <div id="preview">
+            <div class="section-title"><i class="fas fa-eye btn-icon"></i>Vista Previa</div>
+            <p id="previewText">La imagen aparecerá aquí después de tomarla.</p>
+            <img id="capturedImage" style="display: none;">
+        </div>
+    </div>
+
+    <!-- API de Google Maps (opcional, requiere clave) -->
+    <script>
+        // Inicializar mapa (ejemplo básico)
+        function initMap(lat, lng) {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: lat, lng: lng },
+                zoom: 15,
+            });
+            new google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+            });
+        }
+
+        // Obtener ubicación del usuario
+        document.getElementById("getLocation").addEventListener("click", () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        document.getElementById("latitude").value = lat;
+                        document.getElementById("longitude").value = lng;
+                        initMap(lat, lng);
+                    },
+                    (error) => {
+                        alert("Error al obtener la ubicación: " + error.message);
+                    }
+                );
+            } else {
+                alert("Geolocalización no soportada en este navegador.");
+            }
+        });
+
+        // Tomar foto (simulado)
+        document.getElementById("takePhoto").addEventListener("click", () => {
+            alert("Para tomar una foto real, usa la API de MediaDevices.getUserMedia(). Este es un ejemplo visual.");
+            const preview = document.getElementById("capturedImage");
+            preview.src = "https://via.placeholder.com/400x300?text=Foto+Tomada";
+            preview.style.display = "block";
+            document.getElementById("previewText").style.display = "none";
+        });
+    </script>
+
+    <!-- API de Google Maps (descomentar si se usa) -->
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_AQUI&callback=initMap"></script> -->
+</body>
+</html>
